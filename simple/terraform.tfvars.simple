@@ -1,0 +1,3 @@
+zabbix_url="http://localhost/api_jsonrpc.php"
+zabbix_user="apiuser"
+zabbix_password="xxx"
