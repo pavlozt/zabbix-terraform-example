@@ -5,10 +5,12 @@
 
 At first you need basic Terraform knowledge.  If not, consider using [Hashicorp tutorials](https://learn.hashicorp.com/terraform).
 
-Let's use [Thomas Pressnell Terraform provider](https://registry.terraform.io/providers/tpretz/zabbix/latest) with most reachest features.
+Let's use [Thomas Pressnell Terraform provider](https://registry.terraform.io/providers/tpretz/zabbix/latest) with the most complex features.
 
 ## Create  zabbix  api user ##
+In order for Terrafor to work with api, you need to add a special user.
  Go to Administration/Users/Create user **"apiuser"**. Add to Super Administrators. Set proper password. No need configure media for this user.
+ These parameters will be used as Terraform variables in the code below.
 
 # Basic example # 
 First you need declare provider :
@@ -33,7 +35,7 @@ provider "zabbix" {
   serialize = true
 }
 ```
-Define some variables:
+Declare some variables for the api to work successfully
 ```
 variable "zabbix_url"  {
   type = string
@@ -69,12 +71,12 @@ resource "zabbix_host" "vps" {
 
 Now you can sequentially  run **terraform init,  terraform plan, terraform apply** commands.
 
- Full example in directory [simple/](simple/)
+ Full example in directory [simple](simple).
 
 # Bunch of IP cameras example # 
  We will use "Hikvision camera by HTTP" and "ICMP ping" standard templates.
 ## Prepare CSV
- I suppose you know wwwwhow to convert an excel to csv - a machine-friendly form of data.
+ I suppose you know how to convert an excel to csv - a machine-friendly form of data.
  You need a unique id for a camera with Terraform like to operate. In this case, if you swap or reorder rows in an excel file, terraform does not re-create corresponding records.
  I don't use password in this example. You can define user and password globally in Hikvision template.
 ```
@@ -100,7 +102,7 @@ resource "zabbix_host" "camera" {
   for_each = { for cam in local.csv : cam.id => cam }
   host     = each.value.hostname
   name     = each.value.hostname
-  groups   = [data.zabbix_hostgroup.cameras.id]
+  groups   = [zabbix_hostgroup.cameras.id]
   interface {
     type = "agent"
     ip   = each.value.ip
@@ -109,8 +111,21 @@ resource "zabbix_host" "camera" {
    data.zabbix_template.icmp_ping.id]
 }
 ```
-
+This example also greate group "IP Cameras".
 
 ## Combine all together ##
-Full example in directory [multiple\_cameras/](multiple\_cameras)
+Full example in directory [multiple\_cameras](multiple\_cameras).
 
+
+# More practical example #
+
+Often, enterprises operate cameras of different types and checks need to be done in different ways. Example below added another camera type field:
+```
+id,hostname,ip,type,comment
+1,cam-1.local,192.168.88.201,hik,Camera 1
+2,cam-2.local,192.168.88.202,xm,Camera 2
+```
+A more practical example is cameras of different types and binding of different templates [multiple_cam_types](multiple_cam_types).
+
+This code checks the type parameter  and assigns different groups depending on the camera model.
+XM means  XiongmaiTech cameras without http interface, but you can still check ICMP Pings.

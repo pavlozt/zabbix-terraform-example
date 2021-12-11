@@ -1,0 +1,6 @@
+id,hostname,ip,type,comment
+1,cam-1.local,192.168.88.201,hik,Camera 1
+2,cam-2.local,192.168.88.202,xm,Camera 2
+3,cam-3.local,192.168.88.202,hik,Camera 3
+4,cam-4.local,192.168.88.213,xm,Camera 4
+5,cam-5.local,192.168.88.204,hik,Camera 5

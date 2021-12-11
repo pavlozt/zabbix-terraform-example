@@ -22,7 +22,7 @@ resource "zabbix_host" "camera" {
     type = "agent"
     ip   = each.value.ip
   }
-  templates = [data.zabbix_template.cameras_http.id, data.zabbix_template.icmp_ping.id]
+  templates = lower(each.value.type) == "hik" ? [data.zabbix_template.cameras_http.id, data.zabbix_template.icmp_ping.id] : [ data.zabbix_template.icmp_ping.id] 
 }
 
 

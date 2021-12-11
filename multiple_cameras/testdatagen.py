@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 print("id,hostname,ip,comment")
 for i in range (200) :
     subnet = i // 256

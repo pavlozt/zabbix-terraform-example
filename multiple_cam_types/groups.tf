@@ -1,3 +1,3 @@
 resource "zabbix_hostgroup" "cameras" {
-  name = "IP Cameras"
+  name = "IP Cameras misc types"
 }
